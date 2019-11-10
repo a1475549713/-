@@ -3,6 +3,7 @@ package uitestlib.uicommon.modules
 import geb.navigator.Navigator
 
 /**
+ * 未命名输入框
  * Created by QingHuan on 2019/11/9 21:52
  */
 class UnNamedTextInput extends StableEnhancedMoudle {

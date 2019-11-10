@@ -1,7 +1,6 @@
 package uitestlib.uicommon.modules
 
 import geb.Module
-import geb.content.Navigable
 import geb.navigator.Navigator
 import groovy.util.logging.Slf4j
 import org.openqa.selenium.By
