@@ -32,7 +32,7 @@ class ScrollableDiv extends StableEnhancedMoudle{
     }
 
 
-    
+
     /**
      * 从上到下按百分比移动滚动条
      * @param element

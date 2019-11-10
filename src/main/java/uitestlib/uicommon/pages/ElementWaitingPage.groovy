@@ -106,7 +106,7 @@ class ElementWaitingPage extends Page {
      */
 
 
-    Navigator waitForElement(String selector, double timeout = 10, int index) {
+    Navigator waitForElement(String selector, double timeout , int index) {
         if (timeout <= 0) {
             element(selector, index)
         } else {
@@ -118,7 +118,7 @@ class ElementWaitingPage extends Page {
      * @param selector
      * @return
      */
-    Navigator waitForElement(String selector,double timeout = 10) {
+    Navigator waitForElement(String selector,double timeout) {
         if (timeout <= 0) {
             element(selector,)
         } else {
