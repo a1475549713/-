@@ -1,3 +1,3 @@
-# JAVA
+# GROOVY
 
 groovy ui测试
