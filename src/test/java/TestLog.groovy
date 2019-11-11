@@ -1,4 +1,4 @@
-import utils.LogResult
+import uitestlib.uicommon.util.LogResult
 
 class TestLog {
     static   File result1 = LogResult.creatTestResult("文件纪录测试")

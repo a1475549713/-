@@ -1,4 +1,4 @@
-package utils
+package uitestlib.uicommon.util
 
 import groovy.util.logging.Slf4j
 

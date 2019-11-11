@@ -22,7 +22,7 @@ class TestCaseExecuteInfoUtil {
         return 'click-'+generateScreenShotFileNamePrefix(driver)
     }
     /**
-     * 将测试用哦管理名称和石化成下面的格式，以便其他插件调用
+     * 将测试用例名称格式化成下面的格式，以便其他插件调用
      * @param description
      * @return
      */
