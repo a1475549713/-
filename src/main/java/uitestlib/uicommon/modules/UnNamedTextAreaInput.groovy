@@ -13,7 +13,7 @@ class UnNamedTextAreaInput extends StableEnhancedMoudle{
         }
     }
 
-    def inputTextToUnNamedTextAreaInputField(String placeHolderText,String value,int index =0){
+    def inputTextToUnNamedTextAreaInputField0(String placeHolderText,String value,int index =0){
         Navigator input = unNamedTextAreaInput(placeHolderText,index)
         assert input,"页面上没有找到placeHolderText属性为 ${placeHolderText},index为:${index}的元素"
         input.firstElement().clear()

@@ -56,7 +56,7 @@ class Field  extends StableEnhancedMoudle{
 
         //弹出层处理，适用于所有点击后会弹出页面的元素。如列表选择，列表搜索，日期选择元素等，每次检查2S没找到就默认没有
         // 使用 -1来索引最新的overlay
-        overlay(wait:2){$('div.next-overlay-wrapper,opened',-1)}
+        overlay(wait:2){$('div.next-overlay-wrapper.opened',-1)}
     }
 
     /**
