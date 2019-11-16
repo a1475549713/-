@@ -33,6 +33,8 @@ class ZTagGroup extends Field{
     }
 
 
+
+    
     List<String> getValuesForField(String fieldName,Integer fieldIndex = 0){
         Navigator lbDiv = labelDiv(fieldName,fieldIndex)
         Navigator ctrlDiv = controlDivByNavigator(lbDiv)
