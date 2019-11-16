@@ -36,7 +36,7 @@ class AddressSelector extends Field {
      */
     def inputAddressForField(String fieldName,Integer fieldIndex = 0,String...addresses){
         log.info("设置地址：${fieldName},${fieldIndex},${addresses}")
-        Navigator lbDiv = labelDi(fieldName,fieldIndex)
+        Navigator lbDiv = labelDiv(fieldName,fieldIndex)
         assert lbDiv,"页面上找不到名称为$fieldName 的字段"
         inputAddressForField(lbDiv,addresses)
     }
