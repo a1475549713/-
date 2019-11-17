@@ -1,12 +1,13 @@
 package hahah
 
-
-
+import com.alibaba.fastjson.JSON
+import com.alibaba.fastjson.JSONObject
 import org.junit.BeforeClass
 
 class Hahah {
     def x;
     def y;
+
 
     Hahah(){
 
@@ -40,16 +41,22 @@ class Hahah {
         println(l[2])
         String s = l2[2]
         println(s+s.class)
-
-
     }
 
 
     public static void main(String[] args) {
-        Hahah sdf = new Hahah("411111",87)
 
-        println(sdf.hahha())
+        JSONObject json =  JSON.parse("{\n" +
+                "\"1\":\"2\",\n" +
+                "\"2\":\"3\",\n" +
+                "\"3\":{\"a\":\"2\",\"b\":\"3\",\"c\":{\"d\":\"1\",\"e\":\"2\"}}\n" +
+                "}")
+
+
+        print(json)
+
     }
+
 
 
 }

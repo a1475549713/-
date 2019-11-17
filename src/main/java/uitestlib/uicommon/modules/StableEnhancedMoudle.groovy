@@ -649,7 +649,7 @@ class StableEnhancedMoudle extends Module{
 
     Navigator $$(Map<String,Object> attributes=[:],By by){
         WebElement[] elements = browser.driver.findElements(by)
-        def result = elements.findAll {matches((WebElement)it ,attributes)}
+        def result = elements.findAll {matches((WebElement)it,attributes)}
         browser.navigatorFactory.createFromWebElements(result)
     }
 

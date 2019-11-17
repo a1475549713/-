@@ -1,6 +1,7 @@
 package uitestlib.uicommon.pages
 
 import geb.navigator.Navigator
+import groovy.util.logging.Slf4j
 import org.openqa.selenium.Keys
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.interactions.internal.Coordinates
@@ -21,6 +22,7 @@ import org.openqa.selenium.interactions.internal.Locatable
  * Created by QingHuan on 2019/11/10 16:09
  */
 @SuppressWarnings('unused')
+@Slf4j
 class UiCommonBasePage extends ElementWaitingPage {
 
     /**

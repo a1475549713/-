@@ -1,12 +1,14 @@
 package uitestlib.walle.modules
 
 import geb.navigator.Navigator
+import groovy.util.logging.Slf4j
 
 import javax.print.attribute.standard.MediaSize.NA
 
 /**
  * Created by QingHuan on 2019/11/17 0:34
  */
+@Slf4j
 class ZAddressGroup extends Field{
 
     /**

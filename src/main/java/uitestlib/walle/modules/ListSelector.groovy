@@ -2,10 +2,12 @@ package uitestlib.walle.modules
 
 import geb.navigator.EmptyNavigator
 import geb.navigator.Navigator
+import groovy.util.logging.Slf4j
 
 /**
  * Created by QingHuan on 2019/11/14 23:09
  */
+@Slf4j
 class ListSelector  extends Field{
     static content = {
         selectedItem {String textValue ->
@@ -13,7 +15,7 @@ class ListSelector  extends Field{
             def reverse = allPossible.iterator().reverse()
             for (Navigator item : reverse) {
                 if (item.text() == textValue){
-                    log.debug("精确找到文本为$textValue，的选项")
+                    log.debug("精确找到文本为${textValue}，的选项")
                     return item
                 }
             }
@@ -24,7 +26,7 @@ class ListSelector  extends Field{
             reverse =  allPossible.iterator().reverse()
             for (Navigator item : reverse) {
                 if (item.text() .contains(textValue) ){
-                    log.debug("精确找到文本包含$textValue，的选项")
+                    log.debug("精确找到文本包含${textValue}，的选项")
                     return item
                 }
             }
@@ -40,9 +42,9 @@ class ListSelector  extends Field{
      * @return
      */
     def selectValueForField (String fieldName,String value){
-        log.info("为页面字段选择值$fieldName,$value")
+        log.info("为页面字段选择值${fieldName},${value}")
         Navigator lbDiv = labelDiv(fieldName)
-        assert lbDiv,"页面上没有找到名称为：$fieldName,的字段"
+        assert lbDiv,"页面上没有找到名称为：${fieldName},的字段"
         selectValueForField(lbDiv,value)
     }
 
@@ -51,31 +53,31 @@ class ListSelector  extends Field{
     }
 
     def selectValueForField(String fieldName,String...value){
-        log.info("为页面字段选择值$fieldName,$value")
+        log.info("为页面字段选择值${fieldName},${value}")
         Navigator lbDiv = labelDiv(fieldName)
-        assert lbDiv,"页面上没有找到名称为：$fieldName,的字段"
+        assert lbDiv,"页面上没有找到名称为：${fieldName},的字段"
         selectValueForField(lbDiv,value)
     }
 
     def selectValueForField(Navigator lbDiv,String...value){
         assert lbDiv
-        log.info("为页面字段选择值,$value")
+        log.info("为页面字段选择值,${value}")
         value.eachWithIndex {String entry,int i ->
-            log.info("处理选项$entry")
+            log.info("处理选项${entry}")
             selectValueForField(lbDiv,entry,i)
         }
     }
 
 
     def selectValueForField(String fieldName,String value,int iconIndex){
-        log.info("为页面字段选择值$fieldName,$value,$iconIndex")
+        log.info("为页面字段选择值${fieldName},${value},${iconIndex}")
         Navigator lbDiv = labelDiv(fieldName)
-        assert lbDiv,"页面上没有找到名称为：$fieldName,的字段"
+        assert lbDiv,"页面上没有找到名称为：${fieldName},的字段"
         selectValueForField(lbDiv,value,iconIndex)
     }
 
     def selectValueForField(Navigator lbDiv,String value,int iconIndex){
-        log.info("为页面字段选择值$value,$iconIndex")
+        log.info("为页面字段选择值${value},${iconIndex}")
         //字段输入框右侧的下拉框
         Navigator trigger = controlDivByNavigator(lbDiv).$('i.next-icon',class:contains('next-icon-arrow-'),iconIndex)
         if (!trigger){
@@ -106,7 +108,7 @@ class ListSelector  extends Field{
     }
 
     def selectValueForNoField(Navigator ctrlDiv,String value,int iconIndex){
-        log.info("为没有标签的字段选择给定的值$ctrlDiv,$value,$iconIndex")
+        log.info("为没有标签的字段选择给定的值${ctrlDiv},${value},${iconIndex}")
         //字段输入框右侧下拉按钮
         Navigator trigger = ctrlDiv.$('i.next-icon',class:contains('next-icon-arrow-'),iconIndex)
 
@@ -125,9 +127,9 @@ class ListSelector  extends Field{
      * @return
      */
     List<String> getValueForField(String fieldName,Integer fieldIndex=0){
-        log.info("获取页面给定字段值：$fieldName,$fieldIndex")
+        log.info("获取页面给定字段值：${fieldName},${fieldIndex}")
         Navigator theDiv = labelDiv(fieldName,fieldIndex)
-        assert theDiv,"页面上没有找到名称为$fieldName，的字段"
+        assert theDiv,"页面上没有找到名称为${fieldName}，的字段"
         getValueForField(theDiv)
     }
 
@@ -148,7 +150,7 @@ class ListSelector  extends Field{
      */
 
     def selectValueOnOpenedOver(String value){
-        log.info("在已经打开的图层中搜索和选择元素:$value")
+        log.info("在已经打开的图层中搜索和选择元素:${value}")
         stableClick(selectedItem(value))
         log.debug("设置成功")
     }

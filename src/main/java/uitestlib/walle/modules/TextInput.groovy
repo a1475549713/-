@@ -1,11 +1,13 @@
 package uitestlib.walle.modules
 
 import geb.navigator.Navigator
+import groovy.util.logging.Slf4j
 import uitestlib.uicommon.modules.CheckBoxSelector
 
 /**
  * Created by QingHuan on 2019/11/14 23:23
  */
+@Slf4j
 class TextInput  extends  Field{
     static content = {
         textInputField {String labelName,int index =0->

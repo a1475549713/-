@@ -2,11 +2,13 @@ package uitestlib.walle.modules
 
 import geb.navigator.EmptyNavigator
 import geb.navigator.Navigator
+import groovy.util.logging.Slf4j
 
 /**
  * 下来列表类型输入框，点击下拉按钮后，会展示可选的选项
  * Created by QingHuan on 2019/11/11 22:18
  */
+@Slf4j
 class ListSearchSelector extends Field{
 
     static content = {
@@ -16,7 +18,7 @@ class ListSearchSelector extends Field{
             def reverse = allPossible.iterator().reverse()
             for (Navigator item : reverse) {
                 if (item.text() == textValue){
-                    log.debug("精确找到文本为$textValue，的选项")
+                    log.debug("精确找到文本为${textValue}，的选项")
                     return item
                 }
             }
@@ -27,7 +29,7 @@ class ListSearchSelector extends Field{
             reverse =  allPossible.iterator().reverse()
             for (Navigator item : reverse) {
                 if (item.text() .contains(textValue) ){
-                    log.debug("精确找到文本包含$textValue，的选项")
+                    log.debug("精确找到文本包含${textValue}，的选项")
                     return item
                 }
             }
@@ -149,7 +151,7 @@ class ListSearchSelector extends Field{
     List<String> getValueForField(String fieldName,Integer fieldIndex=0){
         log.info("获取页面给定字段值：$fieldName,$fieldIndex")
         Navigator theDiv = labelDiv(fieldName,fieldIndex)
-        assert theDiv,"页面上没有找到名称为$fieldName，的字段"
+        assert theDiv,"页面上没有找到名称为${fieldName}，的字段"
         getValueForField(theDiv)
     }
 
