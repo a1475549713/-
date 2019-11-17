@@ -3,6 +3,7 @@ package uitestlib.uicommon.modules
 import geb.Module
 import geb.navigator.Navigator
 import groovy.util.logging.Slf4j
+import jodd.csselly.CssSelector
 import org.openqa.selenium.By
 import org.openqa.selenium.Keys
 import org.openqa.selenium.WebElement
@@ -13,6 +14,7 @@ import org.openqa.selenium.WebElement
 
 @Slf4j
 class StableEnhancedMoudle extends Module{
+    public static final List<String> NON_SELECTOR_TRANSLATABLE_ATTRIBUTES = ['text']
 
     def stableClick(Navigator navigable){
         stableClick(navigable.firstElement())
@@ -42,6 +44,10 @@ class StableEnhancedMoudle extends Module{
                     sleep(500)
                     click()
                 }
+            }
+            else {
+                js.exec(element,"argument[0].scrollIntoView({behavior: \"instant\", block: \"center\", inline: \"center\"});")
+                element.click()
             }
         }
     }
@@ -406,7 +412,7 @@ class StableEnhancedMoudle extends Module{
         else {
             //有多个匹配，则完全匹配优先级高于包含匹配
             //元素按照优先级排序后，重新返回，组件中依据排列优先级后的顺序来引用索引
-            List<Navigator> fullMatch = []
+/*            List<Navigator> fullMatch = []
             List<Navigator> partMartch = []
             for (Navigator item : niv) {
                 if (testedAttribute=="text"){
@@ -425,11 +431,49 @@ class StableEnhancedMoudle extends Module{
                         partMartch.add(item)
                     }
                 }
+            }*/
+
+            Map<String,List<Navigator>> result = findFullAndPartMatch(niv,testedAttribute,testValue)
+            if (result['fullMatch'].size() ==0){
+                log.info("没有找到完全匹配的元素，2s后再查找一轮")
+                sleep(2000)
+                result = findFullAndPartMatch(niv,testedAttribute,testValue)
             }
+            List<Navigator> fullMatch = result['fullMatch']
+            List<Navigator> partMartch = result['partMatch']
             //排序，全匹配的在前面
             fullMatch.addAll(partMartch)
             return browser.navigatorFactory.createFromNavigators(fullMatch)
         }
+    }
+
+
+    Map<String,List<Navigator>> findFullAndPartMatch(Navigator niv,String testedAttribute,String testValue){
+
+        List<Navigator> fullMatch = []
+        List<Navigator> partMartch = []
+        for (Navigator item : niv) {
+            if (testedAttribute=="text"){
+                if (item.text()==testValue){
+                    fullMatch.add(item)
+                }
+                else {
+                    partMartch.add(item)
+                }
+            }
+            else{
+                if (item.attr(testedAttribute)==testValue){
+                    fullMatch.add(item)
+                }
+                else {
+                    partMartch.add(item)
+                }
+            }
+        }
+        Map<String,List<Navigator>> result = [:]
+        result['fullMatch'] = fullMatch
+        result['partMatch'] = partMartch
+        result
     }
 
     /**
@@ -473,6 +517,180 @@ class StableEnhancedMoudle extends Module{
 
         }
     }
+
+    /**
+     *
+     * @return 当前测试用例名称
+     */
+
+    String getTestCaseName(){
+        String pageName = browser.page.class.simpleName
+        String testCaseName = System.getProperty("ui.test.case.name")
+        if (!testCaseName){
+            testCaseName = 'unKnownCaseName'
+        }
+        return pageName + testCaseName
+    }
+
+    /**
+     * 稳定点击单元格中的按钮或者链接
+     * @param cell
+     * @param buttonTestOrIndex
+     */
+    def clickTableCellButtonStable(Navigator cell,Object buttonTestOrIndex = null){
+        if (buttonTestOrIndex){
+            if (buttonTestOrIndex instanceof String){
+                waitFor (message:"表格中找不到名称为${buttonTestOrIndex}的按钮或链接"){
+                    Navigator btn = cell.$('button',text:contains(buttonTestOrIndex))
+                    if (btn){
+                        stableClick(btn)
+                        return true
+                    }
+                    else {
+                        Navigator a =cell.$('a',text:contains(buttonTestOrIndex))
+                        if (a){
+                            stableClick(a)
+                            return true
+                        }
+                        else{
+                            Navigator input = $('input[type="submit]',value:contains(buttonTestOrIndex))
+                            if (input){
+                                stableClick(input)
+                                return true
+                            }
+                            else {
+                                throw  new  Exception("没有找到给定的按钮 buttonTestOrIndex：${buttonTestOrIndex}")
+                            }
+                        }
+                    }
+                }
+            }
+            else{
+                waitFor(message:"表格中找不到名称为${buttonTestOrIndex}的按钮或链接") {
+                    Integer index = buttonTestOrIndex as Integer
+                    Navigator btn = cell.$('button',index)
+                    if (btn){
+                        stableClick(btn)
+                        return true
+                    }
+                    else {
+                        Navigator a =cell.$('a',index)
+                        if (a){
+                            stableClick(a)
+                            return true
+                        }
+                        else{
+                            Navigator input = $('input[type="submit]',index)
+                            if (input){
+                                stableClick(input)
+                                return true
+                            }
+                            else {
+                                throw  new  Exception("没有找到给定的按钮 buttonTestOrIndex：${buttonTestOrIndex}")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            waitFor {
+                Navigator btn = cell.$('button')
+                if (btn){
+                    stableClick(btn)
+                    return true
+                }
+                else {
+                    Navigator a =cell.$('a')
+                    if (a){
+                        stableClick(a)
+                        return true
+                    }
+                    else{
+                        Navigator input = $('input',type:'submit')
+                        if (input){
+                            stableClick(input)
+                            return true
+                        }
+                        else {
+                            throw  new  Exception("没有找到给定的按钮 buttonTestOrIndex：${buttonTestOrIndex}")
+                        }
+                    }
+                }
+            }
+        }
+        return true
+    }
+
+    /**
+     * 查找元素，每次查找都执行实际的webDriber操作，避免出现元素陈旧，不在Dom树的情况
+     * @param attribute
+     * @param selector
+     * @return
+     */
+    Navigator $$(Map<String,Object> attributes=[:],String selector){
+        Map<String,Object> originalAttributes =( Map<String,Object>) attributes.clone()
+        String cssSelector = optimizeSelector(selector,originalAttributes)
+        WebElement[] elements = browser.driver.findElements(By.cssSelector(cssSelector))
+        def result = elements.findAll{matchs((WebElement)it,attributes)}
+        browser.navigatorFactory.createFromWebElements(result)
+    }
+
+
+    Navigator $$(Map<String,Object> attributes=[:],String selector,int index){
+        Navigator all = $$(attributes,selector)
+        return all[index]
+    }
+
+    Navigator $$(Map<String,Object> attributes=[:],String selector,Range<Integer> range){
+        Navigator all = $$(attributes,selector)
+        return all[range]
+    }
+
+    Navigator $$(Map<String,Object> attributes=[:],By by){
+        WebElement[] elements = browser.driver.findElements(by)
+        def result = elements.findAll {matches((WebElement)it ,attributes)}
+        browser.navigatorFactory.createFromWebElements(result)
+    }
+
+    Navigator $$(Map<String,Object> attributes=[:],By by,int index){
+        Navigator all = $$(attributes,by)
+        return all[index]
+    }
+
+
+    Navigator $$(Map<String,Object> attributes=[:],By by,Range<Integer> range){
+        Navigator all = $$(attributes,by)
+        return all[range]
+    }
+
+
+
+    static  protected  String optimizeSelector(String selector,Map<String,Object> attributes){
+        if (!selector){
+            return selector
+        }
+        def buffer = new StringBuilder(selector)
+        for (def it = attributes.entrySet().iterator();it.hasNext();){
+            def attribute = it.next()
+            if (!(attribute.key in NON_SELECTOR_TRANSLATABLE_ATTRIBUTES) && attribute.value instanceof CharSequence){
+                def attributeValue = attribute.value.toString()
+                if (attribute.key == 'class'){
+                    attributeValue.split(/\s+/).each {className ->
+                        buffer << '.' << geb.navigator.CssSelector.escape(className)
+                    }
+                }else {
+                    buffer << """ [${attribute.key} = "${geb.navigator.CssSelector.escape(attributeValue)}"] """
+                }
+                it.remove()
+            }
+        }
+        if (buffer[0] ==MATCH_ALL_SELECTOR && buffer.length()>1) {
+            buffer.deleteCharAt(0)
+        }
+        buffer.toString()
+    }
+
 
 
 }
